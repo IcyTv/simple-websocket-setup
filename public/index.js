@@ -3,9 +3,13 @@ let msgs = document.getElementById("msg-container");
 let inp = document.getElementById("send");
 socket.onmessage = (ev) => {
     let text = ev.data;
-    console.log(text);
+    console.log(text)
     let p = document.createElement("p");
-    p.appendChild(document.createTextNode(text));
+    if(text.startsWith("SYSTEM:")) {
+        p.innerHTML = "<b>" + text.replace("SYSTEM:", "") + "</b>";
+    } else {
+        p.appendChild(document.createTextNode(text));    
+    }
     msgs.appendChild(p);
 };
 

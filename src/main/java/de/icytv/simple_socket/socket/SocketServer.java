@@ -18,6 +18,7 @@ public class SocketServer extends WebSocketServer {
 
     private final int port;
 
+
     public SocketServer(int port) throws UnknownHostException {
 		this(new InetSocketAddress(port));
 	}
@@ -31,26 +32,41 @@ public class SocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println("New connection " + conn.getRemoteSocketAddress().getHostName());
-        broadcast("New Client connected"); //MISSING NAME
+        //broadcast("New Client connected"); //MISSING NAME
+        conn.send("SYSTEM:Please enter your name:");
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        System.out.println("Client " + conn.getRemoteSocketAddress().getHostName() + (reason.equals("") ? "disconnected!": ("disconnected, because:\n" + reason)));
-        broadcast("... Disconnected");
+        System.out.println("Client " + conn.getRemoteSocketAddress().getHostName() + (reason.equals("") ? " disconnected!": (" disconnected, because:\n" + reason)));
+        String name = conn.<String>getAttachment();
+        if(name != null) {
+            broadcast("SYSTEM:" + name + " disconnected");
+        } else {
+            //User hasn't entered their name yet
+        }
     }
 
     //When sending messages, think about styling (<b>) server messages... How would you do that?
     @Override
     public void onMessage(WebSocket conn, String message) {
-        // EDIT HERE
+        if(conn.<String>getAttachment() == null) {
+            conn.setAttachment(message.replace("SYSTEM:", ""));
+            broadcast("SYSTEM:" + conn.<String>getAttachment() + " connected");
+        } else {
+            broadcast(conn.<String>getAttachment() + ": " + message);
+        }
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
         System.err.println(ex.getLocalizedMessage());
         ex.printStackTrace();
-        //IS THERE ANYTHING ELSE YOU NEED TO DO WHEN AN ERROR OCCURS?
+        try {
+            conn.send("SYSTEM:Exception: " + ex.getMessage());
+        } catch(Exception e) {
+            System.err.println("User already disconnected");
+        }
     }
 
     @Override
