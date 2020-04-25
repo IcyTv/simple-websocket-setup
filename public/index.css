@@ -1,0 +1,13 @@
+#send {
+    position: absolute;
+    bottom: 5px;
+}
+
+#msg-container {
+    height: 95vh;
+    overflow: auto;
+}
+
+p {
+    margin: 2px;
+}
