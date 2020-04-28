@@ -4,7 +4,7 @@ This is a simple java/browser websocket example/task, to show the power of webso
 ## Setup
 To setup run `git clone https://github.com/IcyTv/simple-websocket-setup.git` or download and extract the zip archive from the green button. Afterwards open a console in the folder (either SHIFT+right click or windows+r -> `cmd` and navigate with `cd <FOLDERNAME>` and `dir`.
 
-Then just run `gradlew run`
+Then just run `gradlew.bat run`
 
 You can also open the project in eclipse
 
